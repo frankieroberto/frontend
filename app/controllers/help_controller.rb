@@ -19,7 +19,7 @@ class HelpController < ApplicationController
   end
 
   def ab_testing
-    @ab_variant = request.headers["HTTP_GOVUK_ABTEST_EXAMPLE"] == "B" ? "B" : "A"
+    @experiment = GovukExperiment::Experiment.new("example", request)
   end
 
 private
