@@ -44,7 +44,13 @@ node('mongodb-2.4') {
     }
 
     stage("Checkout") {
-      checkout scm
+      checkout([$class: 'GitSCM',
+        branches: scm.branches,
+        userRemoteConfigs: [[
+          credentialsId: 'govuk-ci-ssh-key',
+          url: 'git@github.com:alphagov/' + REPOSITORY + '.git'
+        ]]
+      ])
     }
 
     stage("Clean up workspace") {
@@ -98,4 +104,7 @@ node('mongodb-2.4') {
           sendToIndividuals: true])
     throw e
   }
+
+  // Wipe the workspace
+  deleteDir()
 }
