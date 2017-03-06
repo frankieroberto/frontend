@@ -4,8 +4,6 @@ class PlaceController < ApplicationController
   include Cacheable
   include Navigable
 
-  before_filter :set_publication
-
   helper_method :postcode_provided?, :postcode
 
   INVALID_POSTCODE = "invalidPostcodeError".freeze
@@ -20,7 +18,7 @@ class PlaceController < ApplicationController
       if @location_error
         @postcode = postcode
       elsif imminence_response.places_found?
-        @publication = PublicationWithPlacesPresenter.new(artefact, imminence_response.places)
+        @publication = PlacePresenter.new(content_item, imminence_response.places)
       end
     end
 

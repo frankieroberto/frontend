@@ -11,4 +11,19 @@ class PlacePresenter < ContentItemPresenter
       details[key.to_s] if details
     end
   end
+
+  def initialize(content_item, places = nil)
+    @content_item = content_item
+    @places = places
+  end
+
+  def places
+    if @places
+      @places.map do |place|
+        place['text']    = place['url'].truncate(36) if place['url']
+        place['address'] = [place['address1'], place['address2']].compact.map(&:strip).join(", ")
+        place
+      end
+    end
+  end
 end
