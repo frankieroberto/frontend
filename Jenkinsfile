@@ -3,6 +3,17 @@
 REPOSITORY = 'frontend'
 DEFAULT_SCHEMA_BRANCH = 'deployed-to-production'
 
+def setBuildStatus(repoName, commit, message, state) {
+  step([
+    $class: "GitHubCommitStatusSetter",
+    commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commit],
+    reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/alphagov/govuk-content-schemas"],
+    contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "continuous-integration/jenkins/${repoName}"],
+    errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+    statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
+}
+
 node('mongodb-2.4') {
   def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
 
@@ -29,13 +40,21 @@ node('mongodb-2.4') {
         [$class: 'StringParameterDefinition',
           name: 'SCHEMA_BRANCH',
           defaultValue: DEFAULT_SCHEMA_BRANCH,
-          description: 'The branch of govuk-content-schemas to test against']]
+          description: 'The branch of govuk-content-schemas to test against'],
+        [$class: 'StringParameterDefinition',
+          name: 'SCHEMA_COMMIT',
+          defaultValue: 'invalid',
+          description: 'The commit of govuk-content-schemas that triggered this build']],
+
     ],
   ])
 
   try {
-    if (!govuk.isAllowedBranchBuild(env.BRANCH_NAME)) {
-      return
+    //if (!govuk.isAllowedBranchBuild(env.BRANCH_NAME)) {
+      //return
+    //}
+    if (params.IS_SCHEMA_TEST) {
+      setBuildStatus(REPOSITORY, params.SCHEMA_COMMIT, 'is building on Jenkins', 'PENDING')
     }
 
     stage("Checkout") {
@@ -85,12 +104,19 @@ node('mongodb-2.4') {
       }
     }
 
+    if (params.IS_SCHEMA_TEST) {
+      setBuildStatus(REPOSITORY, params.SCHEMA_COMMIT, 'Succeeded', 'SUCCESS')
+    }
+
   } catch (e) {
     currentBuild.result = "FAILED"
     step([$class: 'Mailer',
           notifyEveryUnstableBuild: true,
           recipients: 'govuk-ci-notifications@digital.cabinet-office.gov.uk',
           sendToIndividuals: true])
+    if (params.IS_SCHEMA_TEST) {
+      setBuildStatus(REPOSITORY, params.SCHEMA_COMMIT, 'Failed', 'FAILED')
+    }
     throw e
   }
 }
