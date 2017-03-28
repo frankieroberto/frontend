@@ -4,8 +4,6 @@ REPOSITORY = 'frontend'
 DEFAULT_SCHEMA_BRANCH = 'deployed-to-production'
 
 node('mongodb-2.4') {
-  def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
-
   properties([
     buildDiscarder(
       logRotator(
@@ -34,13 +32,15 @@ node('mongodb-2.4') {
   ])
 
   try {
-    if (!govuk.isAllowedBranchBuild(env.BRANCH_NAME)) {
-      return
-    }
+    // if (!govuk.isAllowedBranchBuild(env.BRANCH_NAME)) {
+    //   return
+    // }
 
     stage("Checkout") {
       checkout scm
     }
+
+    def govuk = load 'govuk_jenkinslib.groovy'
 
     stage("Clean up workspace") {
       govuk.cleanupGit()
