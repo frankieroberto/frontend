@@ -154,9 +154,7 @@ def buildProject(options = [:]) {
       }
 
       if (options.testTask) {
-        stage("Run tests") {
-          options.testTask.call()
-        }
+        options.testTask.call()
       } else {
         if (isGem()) {
           def extraRubyVersions = options.extraRubyVersions == null ? [] : options.extraRubyVersions

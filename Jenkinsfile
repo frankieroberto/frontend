@@ -21,13 +21,9 @@ node('mongodb-2.4') {
       }
     },
     testTask: {
-      govuk.runRakeTask("ci:setup:rspec default")
-    },
-    // FIXME: Remove
-    afterTest: {
-      stage("After the test") {
-        echo "In the 'afterTest' closure"
+      stage("Run tests") {
+        govuk.runRakeTask("ci:setup:rspec default")
       }
-    }
+    },
   )
 }
