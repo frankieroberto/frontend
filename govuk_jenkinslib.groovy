@@ -141,9 +141,8 @@ def buildProject(options = [:]) {
     }
 
     if (options.beforeTest) {
-      stage("Test setup") {
-        options.beforeTest.call()
-      }
+      echo "Running pre-test tasks"
+      options.beforeTest.call()
     }
 
     // Prevent a project's tests from running in parallel on the same node
@@ -168,6 +167,11 @@ def buildProject(options = [:]) {
           }
         }
       }
+    }
+
+    if (options.afterTest) {
+      echo "Running post-test tasks"
+      options.afterTest.call()
     }
 
     if (hasAssets() && !params.IS_SCHEMA_TEST) {

@@ -11,18 +11,23 @@ node('mongodb-2.4') {
 
   def govuk = load 'govuk_jenkinslib.groovy'
 
-  // FIXME: Move to beforeTest
-
-  // FIXME: Test before and after steps
   govuk.buildProject(
     sassLint: false,
     beforeTest: {
       // TODO: Make this the default in Jenkinslib and override in individual
       // projects that need `env.RACK_ENV`
-      govuk.setEnvar("RACK_ENV", "")
+      stage("Test setup") {
+        govuk.setEnvar("RACK_ENV", "")
+      }
     },
     testTask: {
       govuk.runRakeTask("ci:setup:rspec default")
+    },
+    // FIXME: Remove
+    afterTest: {
+      stage("After the test") {
+        echo "In the 'afterTest' closure"
+      }
     }
   )
 }
