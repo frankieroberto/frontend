@@ -32,19 +32,28 @@ echo "Warning: using local jenkinslib"
  *
  * node {
  *   def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
- *   govuk.buildProject(
- *     false // disable SASS linting
- *   )
+ *   govuk.buildProject([sassLint: false])
  * }
  * ```
  *
- * @param sassLint Whether or not to run the SASS linter
- * @param extraRubyVersions Optional Ruby versions to run the tests against in
- * addition to the versions currently supported by all GOV.UK applications
+ * @param options Map of build options:
+ *        - sassLint Whether or not to run the SASS linter. Default: true
+ *        - extraRubyVersions Ruby versions to run the tests against in
+ *          addition to the versions currently supported by all GOV.UK
+ *          applications. Default: []
  */
-def buildProject(Map options) {
+def buildProject(options = [:]) {
 
   repoName = JOB_NAME.split('/')[0]
+
+  // TODO: Simplify this when no Jenkinsfile calls buildProject with a boolean
+  // parameter
+  def sassLint = true
+  if (options.getClass() == Boolean) {
+    sassLint = options
+  } else if (options.sassLint != null) {
+    sassLint = options.sassLint
+  }
 
   properties([
     buildDiscarder(
@@ -78,9 +87,9 @@ def buildProject(Map options) {
       setBuildStatus(repoName, params.SCHEMA_COMMIT, "Downstream ${repoName} job is building on Jenkins", 'PENDING')
     }
 
-    stage("Checkout") {
-      checkoutFromGitHubWithSSH(repoName)
-    }
+    // stage("Checkout") {
+    //   checkoutFromGitHubWithSSH(repoName)
+    // }
 
     stage("Clean up workspace") {
       cleanupGit()
@@ -117,7 +126,7 @@ def buildProject(Map options) {
       echo "WARNING: You do not have Ruby linting turned on. Please install govuk-lint and enable."
     }
 
-    if (hasAssets() && hasLint() && options.sassLint) {
+    if (hasAssets() && hasLint() && sassLint) {
       stage("Lint SASS") {
         sassLinter()
       }
@@ -133,8 +142,10 @@ def buildProject(Map options) {
         }
       }
 
+
+      def extraRubyVersions = options.extraRubyVersions == null ? [] : options.extraRubyVersions
       if (isGem()) {
-        testGemWithAllRubies(options.extraRubyVersions)
+        testGemWithAllRubies(extraRubyVersions)
       } else {
         stage("Run tests") {
           runTests()
@@ -178,17 +189,6 @@ def buildProject(Map options) {
     }
     throw e
   }
-}
-
-/**
- * DEPRECATED. Use the `buildProject(optionsMap)` overload
- *
- * @param sassLint Whether or not to run the SASS linter
- * @param extraRubyVersions Optional Ruby versions to run the tests against in
- * addition to the versions currently supported by all GOV.UK applications
- */
-def buildProject(sassLint = true, extraRubyVersions = []) {
-  buildProject[sassLint: sassLint, extraRubyVersions: extraRubyVersions]
 }
 
 /**
