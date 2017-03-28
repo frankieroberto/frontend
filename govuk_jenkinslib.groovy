@@ -42,7 +42,8 @@ echo "Warning: using local jenkinslib"
  * @param extraRubyVersions Optional Ruby versions to run the tests against in
  * addition to the versions currently supported by all GOV.UK applications
  */
-def buildProject(sassLint = true, extraRubyVersions = []) {
+def buildProject(Map options) {
+
   repoName = JOB_NAME.split('/')[0]
 
   properties([
@@ -116,7 +117,7 @@ def buildProject(sassLint = true, extraRubyVersions = []) {
       echo "WARNING: You do not have Ruby linting turned on. Please install govuk-lint and enable."
     }
 
-    if (hasAssets() && hasLint() && sassLint) {
+    if (hasAssets() && hasLint() && options.sassLint) {
       stage("Lint SASS") {
         sassLinter()
       }
@@ -133,7 +134,7 @@ def buildProject(sassLint = true, extraRubyVersions = []) {
       }
 
       if (isGem()) {
-        testGemWithAllRubies(extraRubyVersions)
+        testGemWithAllRubies(options.extraRubyVersions)
       } else {
         stage("Run tests") {
           runTests()
@@ -177,6 +178,17 @@ def buildProject(sassLint = true, extraRubyVersions = []) {
     }
     throw e
   }
+}
+
+/**
+ * DEPRECATED. Use the `buildProject(optionsMap)` overload
+ *
+ * @param sassLint Whether or not to run the SASS linter
+ * @param extraRubyVersions Optional Ruby versions to run the tests against in
+ * addition to the versions currently supported by all GOV.UK applications
+ */
+def buildProject(sassLint = true, extraRubyVersions = []) {
+  buildProject[sassLint: sassLint, extraRubyVersions: extraRubyVersions]
 }
 
 /**
