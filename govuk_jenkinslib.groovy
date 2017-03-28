@@ -32,7 +32,7 @@ echo "Warning: using local jenkinslib"
  *
  * node {
  *   def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
- *   govuk.buildProject([sassLint: false])
+ *   govuk.buildProject(sassLint: false)
  * }
  * ```
  *
@@ -41,6 +41,12 @@ echo "Warning: using local jenkinslib"
  *        - extraRubyVersions Ruby versions to run the tests against in
  *          addition to the versions currently supported by all GOV.UK
  *          applications. Default: []
+ *        - beforeTest A closure containing commands to run before the test
+ *          stage, such as environment variable configuration
+ *        - testTask A closure containing commands to run to test the project.
+ *          This will run instead of the default `bundle exec rake`
+ *        - afterTest A closure containing commands to run after the test stage,
+ *          such as report publishing
  */
 def buildProject(options = [:]) {
 
@@ -134,6 +140,12 @@ def buildProject(options = [:]) {
       echo "WARNING: You do not have SASS linting turned on. Please install govuk-lint and enable."
     }
 
+    if (options.beforeTest) {
+      stage("Test setup") {
+        options.beforeTest.call()
+      }
+    }
+
     // Prevent a project's tests from running in parallel on the same node
     lock("$repoName-$NODE_NAME-test") {
       if (hasDatabase()) {
@@ -142,13 +154,18 @@ def buildProject(options = [:]) {
         }
       }
 
-
-      def extraRubyVersions = options.extraRubyVersions == null ? [] : options.extraRubyVersions
-      if (isGem()) {
-        testGemWithAllRubies(extraRubyVersions)
-      } else {
+      if (options.testTask) {
         stage("Run tests") {
-          runTests()
+          options.testTask.call()
+        }
+      } else {
+        if (isGem()) {
+          def extraRubyVersions = options.extraRubyVersions == null ? [] : options.extraRubyVersions
+          testGemWithAllRubies(extraRubyVersions)
+        } else {
+          stage("Run tests") {
+            runTests()
+          }
         }
       }
     }
