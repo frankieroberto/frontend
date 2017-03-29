@@ -17,7 +17,7 @@ node() {
       // TODO: Make this the default in Jenkinslib and override in individual
       // projects that need `env.RACK_ENV`
       stage("Test setup") {
-        govuk.setEnvar("RACK_ENV", "")
+        // govuk.setEnvar("RACK_ENV", "")
       }
     },
   )
