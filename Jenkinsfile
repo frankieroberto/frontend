@@ -3,7 +3,7 @@
 REPOSITORY = 'frontend'
 DEFAULT_SCHEMA_BRANCH = 'deployed-to-production'
 
-node('mongodb-2.4') {
+node('ci-agent-4') {
 
   stage("Checkout") {
     checkout scm
