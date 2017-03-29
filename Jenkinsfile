@@ -3,7 +3,7 @@
 REPOSITORY = 'frontend'
 DEFAULT_SCHEMA_BRANCH = 'deployed-to-production'
 
-node('ci-agent-4') {
+node() {
 
   stage("Checkout") {
     checkout scm
