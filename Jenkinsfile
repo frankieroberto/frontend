@@ -20,10 +20,5 @@ node('mongodb-2.4') {
         govuk.setEnvar("RACK_ENV", "")
       }
     },
-    testTask: {
-      stage("Run tests") {
-        govuk.runRakeTask("ci:setup:rspec default")
-      }
-    },
   )
 }
