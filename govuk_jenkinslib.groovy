@@ -134,7 +134,7 @@ def buildProject(options = [:]) {
 
     if (hasAssets() && hasLint() && sassLint) {
       stage("Lint SASS") {
-        sassLinter()
+        // sassLinter()
       }
     } else {
       echo "WARNING: You do not have SASS linting turned on. Please install govuk-lint and enable."

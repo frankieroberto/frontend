@@ -11,5 +11,5 @@ node() {
 
   def govuk = load 'govuk_jenkinslib.groovy'
 
-  govuk.buildProject(sassLint: false)
+  govuk.buildProject()
 }
