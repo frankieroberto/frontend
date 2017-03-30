@@ -11,11 +11,5 @@ node() {
 
   def govuk = load 'govuk_jenkinslib.groovy'
 
-  govuk.buildProject(
-    beforeTest: {
-      stage('beforeTest') {
-        echo "In beforeTest"
-      }
-    },
-  )
+  govuk.buildProject(true)
 }
