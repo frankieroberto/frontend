@@ -52,17 +52,18 @@ def buildProject(options = [:]) {
 
   repoName = JOB_NAME.split('/')[0]
 
-  // TODO: Simplify this when no Jenkinsfile calls buildProject with a boolean
-  // parameter
+  // TODO: Simplify these initialization steps when no Jenkinsfile calls
+  // buildProject with a boolean parameter
   def sassLint = true
   if (options.getClass() == Boolean) {
     sassLint = options
   } else if (options.sassLint != null) {
     sassLint = options.sassLint
   }
-
-  echo "Options class: ${options.getClass()}"
-  def hasTestOptions = options.getClass() == Map
+  // Assume that the parameter is a Map if it is not a boolean. We cannot
+  // Simplify call `options instanceof Map` because `instanceof` is blocked by
+  // the Jenkins security plugin
+  def hasTestOptions = options.getClass() != Boolean
 
   properties([
     buildDiscarder(
