@@ -61,6 +61,7 @@ def buildProject(options = [:]) {
     sassLint = options.sassLint
   }
 
+  echo "Options class: ${options.getClass()}"
   def hasTestOptions = options.getClass() == Map
 
   properties([

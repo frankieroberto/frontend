@@ -13,13 +13,19 @@ node() {
 
   govuk.buildProject(
     beforeTest: {
-      echo "In beforeTest"
+      stage('beforeTest') {
+        echo "In beforeTest"
+      }
     },
-    testTask:{
-      echo "In testTask"
+    testTask: {
+      stage('testTask') {
+        echo "In testTask"
+      }
     },
     afterTest: {
-      echo "In afterTest"
+      stage('afterTest') {
+        echo "In afterTest"
+      }
     }
   )
 }
