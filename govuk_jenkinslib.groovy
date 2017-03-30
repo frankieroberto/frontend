@@ -54,12 +54,14 @@ def buildProject(options = [:]) {
 
   // TODO: Simplify this when no Jenkinsfile calls buildProject with a boolean
   // parameter
-  boolean sassLint = true
+  def sassLint = true
   if (options.getClass() == Boolean) {
     sassLint = options
   } else if (options.sassLint != null) {
     sassLint = options.sassLint
   }
+
+  def hasTestOptions = options.getClass() == Map
 
   properties([
     buildDiscarder(
@@ -140,7 +142,7 @@ def buildProject(options = [:]) {
       echo "WARNING: You do not have SASS linting turned on. Please install govuk-lint and enable."
     }
 
-    if (options.beforeTest) {
+    if (hasTestOptions && options.beforeTest) {
       echo "Running pre-test tasks"
       options.beforeTest.call()
     }
@@ -153,7 +155,7 @@ def buildProject(options = [:]) {
         }
       }
 
-      if (options.testTask) {
+      if (hasTestOptions && options.testTask) {
         options.testTask.call()
       } else {
         if (isGem()) {
@@ -167,7 +169,7 @@ def buildProject(options = [:]) {
       }
     }
 
-    if (options.afterTest) {
+    if (hasTestOptions && options.afterTest) {
       echo "Running post-test tasks"
       options.afterTest.call()
     }
