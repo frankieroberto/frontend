@@ -54,7 +54,7 @@ def buildProject(options = [:]) {
 
   // TODO: Simplify this when no Jenkinsfile calls buildProject with a boolean
   // parameter
-  def sassLint = true
+  boolean sassLint = true
   if (options.getClass() == Boolean) {
     sassLint = options
   } else if (options.sassLint != null) {
