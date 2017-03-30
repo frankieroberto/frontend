@@ -17,15 +17,5 @@ node() {
         echo "In beforeTest"
       }
     },
-    testTask: {
-      stage('testTask') {
-        echo "In testTask"
-      }
-    },
-    afterTest: {
-      stage('afterTest') {
-        echo "In afterTest"
-      }
-    }
   )
 }
