@@ -34,7 +34,7 @@ class TravelAdviceControllerTest < ActionController::TestCase
 
       context "requesting atom" do
         setup do
-          get :index, format: 'atom'
+          get :index, params: { format: 'atom' }
         end
 
         should "return an aggregate of country atom feeds" do

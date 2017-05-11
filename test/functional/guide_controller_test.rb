@@ -16,19 +16,19 @@ class GuideControllerTest < ActionController::TestCase
       end
 
       should "set the cache expiry headers" do
-        get :show, slug: "foo"
+        get :show, params: { slug: "foo" }
 
         assert_equal "max-age=1800, public", response.headers["Cache-Control"]
       end
 
       should "have specified parts selected " do
         first_part = @content_item['details']['parts'][0]
-        get :show, slug: "foo", part: first_part['slug']
+        get :show, params: { slug: "foo", part: first_part['slug'] }
         assert_equal first_part['title'], assigns["publication"].current_part.title
       end
 
       should "redirect to base url if bad part requested of multi-part guide" do
-        get :show, slug: "foo", part: "non-existent-part"
+        get :show, params: { slug: "foo", part: "non-existent-part" }
         assert_response :redirect
         assert_redirected_to @content_item['base_path']
       end
@@ -40,13 +40,13 @@ class GuideControllerTest < ActionController::TestCase
       end
 
       should "return a 404" do
-        get :show, slug: "foo"
+        get :show, params: { slug: "foo" }
         assert_equal '404', response.code
       end
 
       should "return 404 if part requested" do
         @controller.expects(:render).with(has_entry(status: 404))
-        get :show, slug: "foo", part: "information"
+        get :show, params: { slug: "foo", part: "information" }
       end
     end
 
@@ -64,27 +64,27 @@ class GuideControllerTest < ActionController::TestCase
           content_store_has_example_item('/not-tagged-to-taxon', schema: 'guide')
           setup_ab_variant('EducationNavigation', variant)
           expect_normal_navigation
-          get :show, slug: "not-tagged-to-taxon"
+          get :show, params: { slug: "not-tagged-to-taxon" }
           assert_response_not_modified_for_ab_test('EducationNavigation')
         end
       end
 
       should "show normal breadcrumbs by default" do
         expect_normal_navigation
-        get :show, slug: "tagged-to-taxon"
+        get :show, params: { slug: "tagged-to-taxon" }
       end
 
       should "show normal breadcrumbs for the 'A' version" do
         expect_normal_navigation
         with_variant EducationNavigation: "A" do
-          get :show, slug: "tagged-to-taxon"
+          get :show, params: { slug: "tagged-to-taxon" }
         end
       end
 
       should "show taxon breadcrumbs for the 'B' version" do
         expect_new_navigation
         with_variant EducationNavigation: "B" do
-          get :show, slug: "tagged-to-taxon"
+          get :show, params: { slug: "tagged-to-taxon" }
         end
       end
     end
@@ -94,7 +94,7 @@ class GuideControllerTest < ActionController::TestCase
 
       prevent_implicit_rendering
       @controller.expects(:render).with(:show, layout: "application.print")
-      get :show, slug: "a-slug", variant: :print
+      get :show, params: { slug: "a-slug", variant: :print }
       assert_equal [:print], @request.variant
     end
   end
