@@ -2,6 +2,9 @@
   "use strict";
 
   window.GOVUK = window.GOVUK || {};
+  window.ga = window.ga || function() {};
+
+  window.ga("require", "ec");
 
   var $ = window.jQuery;
 
@@ -28,6 +31,16 @@
       }
 
       return searchResultData;
+    },
+    buildEcommerceData: function ($searchResults) {
+      return $searchResults.children('li').map(function(index, result) {
+        var resultLink = $(result).find('h3 a');
+        return {
+          url: resultLink.attr('href'),
+          title: resultLink.text(),
+          position: index + 1
+        }
+      });
     },
     enableLiveSearchCheckbox: function ($searchResults) {
       if($('.js-openable-filter input[type=checkbox]').length) {
@@ -114,10 +127,21 @@
     },
     trackSearchResultsAndSuggestions: function ($searchResults) {
       var searchResultData = search.buildSearchResultsData($searchResults);
+      var ecommerceData = search.buildEcommerceData($searchResults);
 
       if (GOVUK.analytics !== undefined &&
           GOVUK.analytics.trackEvent !== undefined &&
           (searchResultData.urls.length || searchResultData.suggestion)) {
+
+        for (var i = 0; i < ecommerceData.length; i++) {
+          var searchResult = ecommerceData[i];
+          window.ga('ec:addImpression', {
+            id: searchResult.url,
+            name: searchResult.title,
+            list: 'GOVUK_SITE_SEARCH_PROTOTYPE'
+          });
+        }
+
         GOVUK.analytics.trackEvent('searchResults', 'resultsShown', {
           label: JSON.stringify(searchResultData),
           nonInteraction: true,
