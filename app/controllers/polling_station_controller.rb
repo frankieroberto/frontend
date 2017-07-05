@@ -24,16 +24,16 @@ class PollingStationController < ApplicationController
   end
 
   def polling_station_address
-    polling_station['properties']['address']
+    polling_station.body['properties']['address']
   end
 
   def remote_url
-    polling_station['properties']['urls']['detail']
+    polling_station.body['properties']['urls']['detail']
   end
 
   def polling_station
     @_polling_station ||= begin
-      WhereDoIVote::PollingStationFinder.by_postcode(postcode).body
+      WhereDoIVote::PollingStationFinder.by_postcode(postcode)
     end
   end
 end
