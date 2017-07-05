@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/whoojemaflip/where_do_i_vote.git
+  revision: b06cdc1519be960299c067502677aa0945f7fc58
+  specs:
+    where_do_i_vote (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -342,6 +348,7 @@ DEPENDENCIES
   uk_postcode (~> 2.1.0)
   unicorn (~> 4.9.0)
   webmock
+  where_do_i_vote!
 
 BUNDLED WITH
    1.14.6

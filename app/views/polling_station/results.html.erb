@@ -1,0 +1,20 @@
+<main id="content" role="main" class="<%= main_class if local_assigns.include?(:main_class) %>">
+  <header class="page-header">
+    <div>
+      <h1>
+        Your polling station
+      </h1>
+    </div>
+  </header>
+
+  <div class="interaction">
+    <p class="interaction-match">
+      <%= address %>
+    </p>
+    <p id="get-started" class="get-started group">
+      <a href="demo_url" rel="external" class="button" role="button">
+        See a map of how to get there
+      </a>
+    </p>
+  </div>
+</main>

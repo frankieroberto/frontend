@@ -1,0 +1,37 @@
+<main id="content" role="main" class="<%= main_class if local_assigns.include?(:main_class) %>">
+  <header class="page-header">
+    <div>
+      <h1>
+        Find your local polling station
+      </h1>
+    </div>
+  </header>
+  <div class="article-container group">
+    <div class="content-block">
+      <div class="inner">
+        <section class="intro">
+          <div class="get-started-intro">
+            Enter your home postcode to find the polling station where you can vote in person
+          </div>
+        </section>
+        <div class="postcode-search-form">
+          <form method="post" id="local-locator-form" class="find-location-for-<%= format %>">
+            <fieldset>
+              <legend class="visuallyhidden">Postcode lookup</legend>
+              <div class="ask_location">
+                <label class="instruction" for="postcode">Enter a postcode</label>
+                <p>For example SW1A 2AA</p>
+                <input class="postcode"
+                       id="postcode"
+                       name="postcode"
+                       type="text"
+                       value="<%= postcode %>">
+                <button type="submit" class="button">Find</button>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

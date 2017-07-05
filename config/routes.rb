@@ -23,6 +23,11 @@ Frontend::Application.routes.draw do
   get "/help/ab-testing", to: "help#ab_testing"
   get "/tour", to: "help#tour"
 
+  # polling station pages
+  get "/find-polling-station", to: "polling_station#index"
+  post "/find-polling-station", to: "polling_station#find"
+  get "/find-polling-station/:postcode", to: "polling_station#result", as: 'polling_station_details'
+  get "/polling-station-not-found", to: "polling_station#not_found", as: 'polling_station_not_found'
   # Done pages
   constraints FormatRoutingConstraint.new('completed_transaction') do
     get "*slug", slug: %r{done/.+}, to: "completed_transaction#show"
