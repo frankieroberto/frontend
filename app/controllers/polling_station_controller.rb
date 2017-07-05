@@ -33,7 +33,7 @@ class PollingStationController < ApplicationController
 
   def polling_station
     @_polling_station ||= begin
-      WhereDoIVote::PollingStationFinder.by_postcode(postcode)
+      WhereDoIVote::PollingStationFinder.by_postcode(postcode).body
     end
   end
 end
