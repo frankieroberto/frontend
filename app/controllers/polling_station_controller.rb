@@ -24,11 +24,11 @@ class PollingStationController < ApplicationController
   end
 
   def polling_station_address
-    polling_station.body['properties']['address']
+    polling_station.body['polling_station']['properties']['address']
   end
 
   def remote_url
-    polling_station.body['properties']['urls']['detail']
+    polling_station.body['polling_station']['properties']['urls']['detail']
   end
 
   def polling_station
