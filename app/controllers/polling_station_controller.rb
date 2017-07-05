@@ -28,7 +28,7 @@ class PollingStationController < ApplicationController
   end
 
   def remote_url
-    polling_station.body['polling_station']['properties']['urls']['detail']
+    "https://wheredoivote.co.uk/postcode/#{postcode}/"
   end
 
   def polling_station
