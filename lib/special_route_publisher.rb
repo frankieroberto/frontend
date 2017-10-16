@@ -85,4 +85,23 @@ class SpecialRoutePublisher
       ],
     }
   end
+
+  def self.testing_routes
+    {
+      exact: [
+        {
+          content_id: "df0e39ad-6019-4bc1-8143-329664010a52",
+          base_path: "/finder-frontend/search",
+          title: "GOV.UK finder frontend search results API",
+          description: "Finder frontend search.",
+        },
+        {
+          content_id: "a4048385-4404-4da8-8e3f-8b59b9ce9bc9",
+          base_path: "/finder-frontend/search.json",
+          title: "GOV.UK finder frontend search results API",
+          description: "Finder frontend search.",
+        }
+      ]
+    }
+  end
 end

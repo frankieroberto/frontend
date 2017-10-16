@@ -19,6 +19,14 @@ namespace :publishing_api do
       end
     end
 
+    if ENV['GOVUK_WEBSITE_ROOT'] =~ /integration/ || ENV['GOVUK_WEBSITE_ROOT'] =~ /staging/
+      SpecialRoutePublisher.testing_routes.each do |route_type, routes_for_type|
+        routes_for_type.each do |route|
+          publisher.publish(route_type, route)
+        end
+      end
+    end
+
     HomepagePublisher.publish!(publishing_api, logger)
   end
 end
