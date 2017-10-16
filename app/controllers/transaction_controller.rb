@@ -12,6 +12,8 @@ class TransactionController < ApplicationController
   def jobsearch
   end
 
+  slimmer_template 'core_layout'
+
 private
 
   def set_content_item
